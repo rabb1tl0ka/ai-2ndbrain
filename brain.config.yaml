@@ -1,0 +1,25 @@
+# 2nd Brain Setup Configuration
+# Fill in your details below, then run: ./setup.sh
+#
+# Rules:
+#   - Keep values in double quotes
+#   - No colons (:) inside values
+#   - USER_CONTEXT can be 1-2 sentences
+
+# Your full name
+USER_NAME: "Your Name"
+
+# Your @handle used in notes and attributions
+USER_HANDLE: "@yourhandle"
+
+# Your job title
+USER_ROLE: "Your Role"
+
+# Your company name
+USER_COMPANY: "Your Company"
+
+# 1-2 sentences describing your work context
+USER_CONTEXT: "Describe your work context in 1-2 sentences."
+
+# What this vault is for (e.g. "work at Loka", "freelance projects", "personal knowledge")
+VAULT_FOCUS: "work at Your Company"
