@@ -17,8 +17,24 @@ warnings=0
 # Claude Code
 if ! command -v claude &>/dev/null; then
   echo "  ⚠  Claude Code is not installed."
-  echo "     Your vault will still be set up, but you need Claude Code to use it."
-  echo "     Install: https://claude.ai/code"
+  echo "     It's required to use your vault."
+  echo ""
+  read -rp "     Install it now? [y/N]: " install_claude
+  if [[ "$install_claude" =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "     Running: curl -fsSL https://claude.ai/install.sh | bash"
+    echo ""
+    curl -fsSL https://claude.ai/install.sh | bash
+    echo ""
+    if command -v claude &>/dev/null; then
+      echo "  ✓  Claude Code installed."
+    else
+      echo "  ⚠  Installation may have failed. Check the output above."
+      echo "     You can install manually: https://claude.ai/code"
+    fi
+  else
+    echo "     Skipping. Install manually when ready: https://claude.ai/code"
+  fi
   echo ""
   ((warnings++)) || true
 fi
