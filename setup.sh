@@ -54,7 +54,19 @@ echo "  Default: $DEFAULT_DEST"
 read -rp "  Path [press Enter for default]: " install_path
 install_path="${install_path:-$DEFAULT_DEST}"
 install_path="${install_path/#\~/$HOME}"   # expand ~
+# Resolve to absolute path (works even if path doesn't exist yet)
+install_path="$(cd "$(dirname "$install_path")" 2>/dev/null && pwd)/$(basename "$install_path")" || install_path="$(pwd)/$install_path"
 echo ""
+
+# Block install inside the repo
+if [[ "$install_path" == "$SCRIPT_DIR" || "$install_path" == "$SCRIPT_DIR/"* ]]; then
+  echo "  ✗  Cannot install inside the repo directory."
+  echo "     Your vault must live outside this repo so your personal notes"
+  echo "     don't get mixed up with the template files."
+  echo "     Choose a path outside of: $SCRIPT_DIR"
+  echo ""
+  exit 1
+fi
 
 if [[ -d "$install_path" ]]; then
   echo "  ⚠  $install_path already exists."
