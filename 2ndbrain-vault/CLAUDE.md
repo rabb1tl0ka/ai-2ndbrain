@@ -128,3 +128,35 @@ Reports merge new content with existing daily files — nothing gets overwritten
 | **meetings.md** | Formal 1-on-1 interactions | Dated entries with Key Takeaways, Action Items |
 | **log.md** | Captain's Log of observations | Notable interactions from any source (Slack, email, casual chats) — What Happened / What It Means / Follow-up |
 | **tasks.md** | Action items for this person | Checkbox list of actions {{USER_NAME}} is taking for or because of them |
+
+## Integrations (MCP)
+
+At the start of each session, check which MCP tools are available. Integrations multiply the vault's power — Claude can read from and act on external systems directly, without the user leaving the terminal.
+
+### If integrations are available
+
+**Slack**
+- "Save this Slack thread to my inbox" → read the thread via Slack MCP, save to `inbox/` with source attribution
+- "Draft and send a message to [person/channel]" → draft from vault context, send via Slack MCP
+- "What did [person] say about X?" → search Slack, summarize, save anything relevant to inbox
+
+**Notion**
+- "Update this Notion page with [content]" → fetch the page, apply changes via Notion MCP
+- "Pull this Notion page into my vault" → fetch and save to appropriate vault location
+- "Sync my project notes to Notion" → read from `projects/`, update corresponding Notion pages
+
+**Google Calendar**
+- "Set up today's daily note" → pull today's events via Calendar MCP, pre-populate `daily/YYYY-MM-DD.md` with meeting context
+- "Prep for my meeting with [person]" → fetch calendar event, cross-reference with relationship profile and project notes
+
+**Gmail**
+- "Save this email thread to my inbox" → fetch via Gmail MCP, save to `inbox/` with attribution
+- "Draft a reply to [person]" → read email context, draft from vault relationship knowledge
+
+### If integrations are NOT available
+
+Tell the user:
+
+> "I don't see any MCP integrations connected. You can activate Notion, Slack, Gmail, and Google Calendar at **claude.ai → Settings → Integrations**. Once connected, I can read and act on those tools directly from your vault sessions."
+
+Don't repeat this message every session — only mention it once if the user seems unaware, or if they explicitly ask to do something that requires an integration.

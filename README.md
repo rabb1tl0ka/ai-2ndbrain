@@ -111,8 +111,26 @@ Each person in `user/relationships/` gets 4 files:
 
 `user/development/` tracks your growth as a professional. Fill in `plan.md` with the behaviors you're building, then ask Claude to process interactions against it. The protocol in `user/development/CLAUDE.md` tells Claude how to extract evidence and write honest log entries.
 
+## Power features: connecting external tools
+
+The vault alone is useful. Connected to your external tools, it's a different level.
+
+Claude can read from and act on Notion, Slack, Gmail, and Google Calendar directly inside your vault sessions — no copy-pasting, no context switching.
+
+**What this unlocks:**
+- *"Save this Slack thread to my inbox"* → Claude fetches it and saves it with attribution
+- *"Update the Notion page with my meeting notes"* → Claude pushes changes directly
+- *"Set up today's daily note"* → Claude pulls your calendar events and pre-populates the file
+- *"Draft and send a message to [person]"* → Claude writes it from vault context and sends it
+
+**How to set it up:**
+
+Go to **[claude.ai → Settings → Integrations](https://claude.ai/settings/integrations)** and connect the tools you use. Once connected, they're available in every Claude Code session automatically.
+
+If Claude doesn't see your integrations in a vault session, it will tell you and point you here.
+
 ## Requirements
 
 - [Claude Code](https://claude.ai/code) — for AI-assisted knowledge work
-- A markdown editor — [Obsidian](https://obsidian.md) recommended
+- A markdown editor — [Obsidian](https://obsidian.md) recommended (any editor works)
 - `bash` + `sed` — for `setup.sh` (standard on macOS and Linux)
