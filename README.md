@@ -28,9 +28,8 @@ cd ai-2ndbrain
 ```
 
 **2. Fill in your config**
-```bash
-# Edit brain.config.yaml — 6 fields, takes 2 minutes
-```
+
+Edit `brain.config.yaml` — 6 fields, takes 2 minutes:
 
 ```yaml
 USER_NAME: "Your Name"
@@ -46,25 +45,25 @@ VAULT_FOCUS: "work at Your Company"
 ./setup.sh
 ```
 
-That's it. All `{{placeholders}}` across the vault are replaced with your values.
+The script will ask where to install your vault (default: `~/2ndbrain`). It copies the vault there and replaces all `{{placeholders}}` with your values. Your vault lives outside this repo — your personal knowledge stays yours.
 
 **4. Add your first project and relationship**
 
 ```bash
-# Start a new project
-cp -r 2ndbrain-vault/projects/_example-project 2ndbrain-vault/projects/my-project
+# Start a new project (replace <my-project> with your project name)
+cp -r ~/2ndbrain/projects/_example-project ~/2ndbrain/projects/my-project
 
 # Track a relationship
-cp -r 2ndbrain-vault/user/relationships/_example-person 2ndbrain-vault/user/relationships/alex-chen
+cp -r ~/2ndbrain/user/relationships/_example-person ~/2ndbrain/user/relationships/alex-chen
 ```
 
 **5. Open the vault and spawn Claude Code**
 
-Open `2ndbrain-vault/` in Obsidian (or any markdown editor).
+Open your vault folder in Obsidian (or any markdown editor).
 
-Then start a Claude Code session inside the vault directory:
+Then start a Claude Code session inside it:
 ```bash
-cd 2ndbrain-vault
+cd ~/2ndbrain
 claude
 ```
 

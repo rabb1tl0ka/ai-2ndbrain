@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="$SCRIPT_DIR/brain.config.yaml"
-VAULT="$SCRIPT_DIR/2ndbrain-vault"
+VAULT_TEMPLATE="$SCRIPT_DIR/2ndbrain-vault"
 
 echo ""
 echo "2nd Brain Setup"
@@ -25,17 +25,8 @@ fi
 
 # Config file exists
 if [[ ! -f "$CONFIG" ]]; then
-  echo "Error: brain.config.yaml not found at $SCRIPT_DIR"
+  echo "  Error: brain.config.yaml not found at $SCRIPT_DIR"
   exit 1
-fi
-
-# Detect re-run: if no {{USER_NAME}} exists anywhere in the vault, setup was already run
-if ! grep -rqF "{{USER_NAME}}" "$VAULT" --include="*.md" 2>/dev/null; then
-  echo "  ⚠  No {{USER_NAME}} tags found in the vault — setup may have already been run."
-  echo "     If you're re-configuring, restore the vault from git first:"
-  echo "     git checkout -- 2ndbrain-vault/"
-  echo ""
-  ((warnings++)) || true
 fi
 
 # Detect unfilled config defaults
@@ -55,7 +46,31 @@ if [[ $warnings -eq 0 ]]; then
   echo ""
 fi
 
-# ── Replace tags ───────────────────────────────────────────────────────────────
+# ── Install location ───────────────────────────────────────────────────────────
+
+DEFAULT_DEST="$HOME/2ndbrain"
+echo "Where do you want to install your vault?"
+echo "  Default: $DEFAULT_DEST"
+read -rp "  Path [press Enter for default]: " install_path
+install_path="${install_path:-$DEFAULT_DEST}"
+install_path="${install_path/#\~/$HOME}"   # expand ~
+echo ""
+
+if [[ -d "$install_path" ]]; then
+  echo "  ⚠  $install_path already exists."
+  read -rp "     Overwrite? [y/N]: " confirm
+  [[ "$confirm" =~ ^[Yy]$ ]] || { echo "  Aborted."; exit 0; }
+  rm -rf "$install_path"
+  echo ""
+fi
+
+cp -r "$VAULT_TEMPLATE" "$install_path"
+VAULT="$install_path"
+
+echo "  ✓  Vault copied to $VAULT"
+echo ""
+
+# ── Apply config ───────────────────────────────────────────────────────────────
 
 echo "Applying config..."
 echo ""
@@ -121,18 +136,18 @@ echo ""
 echo "Next steps:"
 echo ""
 echo "  1. Copy and rename the example directories as needed:"
-echo "       cp -r 2ndbrain-vault/user/relationships/_example-person 2ndbrain-vault/user/relationships/<name>"
-echo "       cp -r 2ndbrain-vault/projects/_example-project 2ndbrain-vault/projects/<project-name>"
+echo "       cp -r $VAULT/user/relationships/_example-person $VAULT/user/relationships/<name>"
+echo "       cp -r $VAULT/projects/_example-project $VAULT/projects/<project-name>"
 echo ""
-echo "  2. Open 2ndbrain-vault/ in a markdown editor."
+echo "  2. Open $VAULT in a markdown editor."
 echo "     Obsidian (https://obsidian.md) works great — but any editor does."
 echo ""
 if command -v claude &>/dev/null; then
   echo "  3. Spawn Claude Code inside the vault:"
-  echo "       cd 2ndbrain-vault && claude"
+  echo "       cd \"$VAULT\" && claude"
 else
   echo "  3. Install Claude Code (https://claude.ai/code), then:"
-  echo "       cd 2ndbrain-vault && claude"
+  echo "       cd \"$VAULT\" && claude"
 fi
 echo ""
 echo "  4. Start."
