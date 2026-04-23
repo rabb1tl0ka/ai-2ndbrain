@@ -1,1 +1,1 @@
-@roadmap/CLAUDE.md
+@.kernel/roadmap/CLAUDE.md
