@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="$SCRIPT_DIR/brain.config.yaml"
+CONFIG_EXAMPLE="$SCRIPT_DIR/brain.config.example.yaml"
 VAULT_TEMPLATE="$SCRIPT_DIR/2ndbrain-vault"
 
 echo ""
@@ -39,10 +40,14 @@ if ! command -v claude &>/dev/null; then
   ((warnings++)) || true
 fi
 
-# Config file exists
+# Auto-copy example config if brain.config.yaml doesn't exist
 if [[ ! -f "$CONFIG" ]]; then
-  echo "  Error: brain.config.yaml not found at $SCRIPT_DIR"
-  exit 1
+  cp "$CONFIG_EXAMPLE" "$CONFIG"
+  echo "  ✓  Created brain.config.yaml from brain.config.example.yaml"
+  echo ""
+  echo "  Fill in your details in brain.config.yaml, then re-run ./setup.sh"
+  echo ""
+  exit 0
 fi
 
 # Detect unfilled config defaults
@@ -64,13 +69,35 @@ fi
 
 # ── Install location ───────────────────────────────────────────────────────────
 
+# Read VAULT_PATH from config
+raw_vault_path=""
+while IFS= read -r line; do
+  [[ "$line" =~ ^[[:space:]]*# ]] && continue
+  [[ "$line" != *:* ]] && continue
+  key="${line%%:*}"
+  key="${key// /}"
+  if [[ "$key" == "VAULT_PATH" ]]; then
+    value="${line#*: }"
+    value="${value# }"
+    value="${value#\"}"
+    value="${value%\"}"
+    raw_vault_path="$value"
+    break
+  fi
+done < "$CONFIG"
+
 DEFAULT_DEST="$HOME/2ndbrain"
-echo "Where do you want to install your vault?"
-echo "  Default: $DEFAULT_DEST"
-read -rp "  Path [press Enter for default]: " install_path
-install_path="${install_path:-$DEFAULT_DEST}"
-install_path="${install_path/#\~/$HOME}"   # expand ~
-# Resolve to absolute path (works even if path doesn't exist yet)
+if [[ -n "$raw_vault_path" && "$raw_vault_path" != "~/2ndbrain" ]]; then
+  install_path="${raw_vault_path/#\~/$HOME}"
+else
+  echo "Where do you want to install your vault?"
+  echo "  Default: $DEFAULT_DEST"
+  read -rp "  Path [press Enter for default]: " install_path
+  install_path="${install_path:-$DEFAULT_DEST}"
+  install_path="${install_path/#\~/$HOME}"
+fi
+
+# Resolve to absolute path
 install_path="$(cd "$(dirname "$install_path")" 2>/dev/null && pwd)/$(basename "$install_path")" || install_path="$(pwd)/$install_path"
 echo ""
 
@@ -118,6 +145,7 @@ while IFS= read -r line; do
   value="${value%\'}"
 
   [[ -z "$key" || -z "$value" ]] && continue
+  [[ "$key" == "VAULT_PATH" ]] && continue  # not a vault placeholder
 
   placeholder="{{${key}}}"
   count=0
@@ -144,6 +172,7 @@ while IFS= read -r line; do
   key="${line%%:*}"
   key="${key// /}"
   [[ -z "$key" ]] && continue
+  [[ "$key" == "VAULT_PATH" ]] && continue
   if grep -rqF "{{${key}}}" "$VAULT" --include="*.md" 2>/dev/null; then
     missed+=("{{${key}}}")
   fi
@@ -163,20 +192,16 @@ fi
 echo ""
 echo "Next steps:"
 echo ""
-echo "  1. Copy and rename the example directories as needed:"
-echo "       cp -r $VAULT/user/relationships/_example-person $VAULT/user/relationships/<name>"
-echo "       cp -r $VAULT/projects/_example-project $VAULT/projects/<project-name>"
-echo ""
-echo "  2. Open $VAULT in a markdown editor."
+echo "  1. Open $VAULT in a markdown editor."
 echo "     Obsidian (https://obsidian.md) works great — but any editor does."
 echo ""
 if command -v claude &>/dev/null; then
-  echo "  3. Spawn Claude Code inside the vault:"
+  echo "  2. Spawn Claude Code inside the vault:"
   echo "       cd \"$VAULT\" && claude"
 else
-  echo "  3. Install Claude Code (https://claude.ai/code), then:"
+  echo "  2. Install Claude Code (https://claude.ai/code), then:"
   echo "       cd \"$VAULT\" && claude"
 fi
 echo ""
-echo "  4. Start."
+echo "  3. Start."
 echo ""

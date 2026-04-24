@@ -15,8 +15,9 @@ A Claude-powered personal knowledge system. Clone it, configure it in 2 minutes,
   projects/            ← one folder per active project
   user/                ← who you are: goals, challenges, development, relationships
   templates/           ← note templates
-brain.config.yaml      ← your personal config (fill this in)
-setup.sh               ← applies your config to the vault
+brain.config.example.yaml  ← config template (copy → brain.config.yaml, then fill in)
+brain.config.yaml          ← your personal config, gitignored — never committed
+setup.sh                   ← applies your config to the vault
 ```
 
 ## Setup
@@ -29,7 +30,12 @@ cd ai-2ndbrain
 
 **2. Fill in your config**
 
-Edit `brain.config.yaml` — 6 fields, takes 2 minutes:
+Run setup once to generate your personal config file:
+```bash
+./setup.sh
+```
+
+On first run, the script creates `brain.config.yaml` from the example template and exits. Fill in your details — 7 fields, takes 2 minutes:
 
 ```yaml
 USER_NAME: "Your Name"
@@ -38,26 +44,19 @@ USER_ROLE: "Your Role"
 USER_COMPANY: "Your Company"
 USER_CONTEXT: "Describe your work context in 1-2 sentences."
 VAULT_FOCUS: "work at Your Company"
+VAULT_PATH: "~/2ndbrain"   # where to install your vault
 ```
 
-**3. Run setup**
+`brain.config.yaml` is gitignored — your personal values are never committed.
+
+**3. Run setup again**
 ```bash
 ./setup.sh
 ```
 
-The script will ask where to install your vault (default: `~/2ndbrain`). It copies the vault there and replaces all `{{placeholders}}` with your values. Your vault lives outside this repo — your personal knowledge stays yours.
+Copies the vault to `VAULT_PATH` and replaces all `{{placeholders}}` with your values. Your vault lives outside this repo — your personal knowledge stays yours.
 
-**4. Add your first project and relationship**
-
-```bash
-# Start a new project (replace <my-project> with your project name)
-cp -r ~/2ndbrain/projects/_example-project ~/2ndbrain/projects/my-project
-
-# Track a relationship
-cp -r ~/2ndbrain/user/relationships/_example-person ~/2ndbrain/user/relationships/alex-chen
-```
-
-**5. Open the vault and spawn Claude Code**
+**4. Open the vault and spawn Claude Code**
 
 Open your vault folder in Obsidian (or any markdown editor).
 

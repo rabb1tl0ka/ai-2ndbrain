@@ -1,5 +1,5 @@
 # 2nd Brain Setup Configuration
-# Fill in your details below, then run: ./setup.sh
+# Copy this file to brain.config.yaml, fill in your details, then run: ./setup.sh
 #
 # Rules:
 #   - Keep values in double quotes
@@ -23,3 +23,7 @@ USER_CONTEXT: "Describe your work context in 1-2 sentences."
 
 # What this vault is for (e.g. "work at Loka", "freelance projects", "personal knowledge")
 VAULT_FOCUS: "work at Your Company"
+
+# Where to install your vault (absolute path or ~ for home directory)
+# Must be outside this repo directory
+VAULT_PATH: "~/2ndbrain"
