@@ -1,13 +1,23 @@
 <!-- 
-  TEMPLATE: Copy this folder, rename it to the person's name (e.g. "Alex-Chen"), delete this comment.
-  Use lowercase-hyphenated names: "sarah-kim", "john-doe".
+  This is a template. Don't copy it manually — ask Claude to create a new person profile.
+  See CLAUDE.md for how the relationship tracking system works.
 -->
 
 # Profile — {{PERSON_NAME}}
 
 **Role**: {{PERSON_ROLE}}
-**Relationship to {{USER_NAME}}**: {{RELATIONSHIP_TYPE}}  
+**Division**: *(e.g. Backend, Design, Mobile, Web, QA, PM, Sales)*
+**Relationship to {{USER_NAME}}**: {{RELATIONSHIP_TYPE}}
 *(e.g. direct report, manager, peer, client, stakeholder)*
+
+## Contact
+
+| | |
+|---|---|
+| **Slack ID** | `U0XXXXXXX` |
+| **Slack DM channel** | `D0XXXXXXX` |
+| **Slack hangouts** | `#channel-one`, `#channel-two` |
+| **Email** | |
 
 ---
 

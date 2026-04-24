@@ -118,9 +118,14 @@ Reports merge new content with existing daily files — nothing gets overwritten
 
 ## Relationship & Team Tracking System
 
-{{USER_NAME}} tracks relationships with key people using a consistent 4-file structure per person.
+Two separate systems depending on the relationship type:
 
-**Applies to**: `user/relationships/` (stakeholders, peers, direct reports — anyone worth tracking)
+| System | Location | Who it covers |
+|--------|----------|---------------|
+| **Internal relationships** | `user/relationships/{firstname-lastname}/` | Colleagues, peers, direct reports, managers — same company |
+| **Project stakeholders** | `projects/{project}/stakeholders/{firstname-lastname}/` | Clients, external partners — scoped to a specific engagement |
+
+**Applies to internal relationships**: `user/relationships/` (peers, direct reports — anyone worth tracking within the company)
 
 | File | Purpose | Content Type |
 |------|---------|--------------|
@@ -128,6 +133,38 @@ Reports merge new content with existing daily files — nothing gets overwritten
 | **meetings.md** | Formal 1-on-1 interactions | Dated entries with Key Takeaways, Action Items |
 | **log.md** | Captain's Log of observations | Notable interactions from any source (Slack, email, casual chats) — What Happened / What It Means / Follow-up |
 | **tasks.md** | Action items for this person | Checkbox list of actions {{USER_NAME}} is taking for or because of them |
+
+### Creating new relationship profiles
+
+When {{USER_NAME}} references a person who doesn't have a profile in `user/relationships/` yet — from a team.md, a meeting note, a Slack thread, or any other context — **create the stub immediately**:
+
+1. Copy `_example-person/` → `user/relationships/{firstname-lastname}/`
+2. Fill in what you know: name, role, division, Slack ID if available
+3. Leave unknown fields as placeholders — don't block on missing info
+4. Reference the new profile from wherever it was first mentioned
+
+Never ask the user to do this manually.
+
+### Creating new stakeholder profiles
+
+When {{USER_NAME}} references a client or external stakeholder in the context of a project who doesn't have a profile yet:
+
+1. Create `projects/{project}/stakeholders/{firstname-lastname}/profile.md` and a `messages/` directory
+2. Fill in what you know: name, role, Slack ID and channels if available
+3. Leave unknown fields as placeholders — don't block on missing info
+4. Reference the new profile from wherever it was first mentioned
+
+Never ask the user to do this manually.
+
+### Looking up updates from a person
+
+When {{USER_NAME}} asks "what's going on with [person] about [topic]":
+
+1. Read their profile at `user/relationships/{person}/profile.md`
+2. Use their Slack ID + `#channels` from their profile to target the search
+3. Search those channels via Slack MCP for recent activity
+4. Cross-reference with project channels from any relevant `projects/{project}/team/team.md`
+5. Summarize findings and save anything notable to their `log.md`
 
 ## Integrations (MCP)
 

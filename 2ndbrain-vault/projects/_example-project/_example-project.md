@@ -11,11 +11,11 @@ client: "{{CLIENT_OR_CONTEXT}}"
 
 ## Team
 
-*(Who's working on this? Names + roles.)*
+See [[team/team]] for members, divisions, roles, and project Slack channels.
 
-| Name | Role |
-|------|------|
-| | |
+## Stakeholders
+
+See [[stakeholders/]] for client and external contacts on this project.
 
 ## Key Links
 
