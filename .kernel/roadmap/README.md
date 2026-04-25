@@ -29,6 +29,7 @@ Items start as flat files and grow into workspace directories when they need sup
 
 | File                        | Status      | Priority | Owner | One-Line Overview |
 |-----------------------------|-------------|----------|-------|-------------------|
+| [idea-vault-skills-and-meeting-import/](idea-vault-skills-and-meeting-import/idea-vault-skills-and-meeting-import.md) | ⏳ todo | medium | | Consolidate vault-related Claude Skills into this repo and add a deterministic Python script that imports Google Meet transcripts from Drive into the vault. |
 | [feat-check-update/](feat-check-update/feat-check-update.md) | ⏳ todo | medium | | A script installed into target repos that checks the local `.roadmap-version` against the latest GitHub release tag and tells the dev whether an upgrade is available. |
 | [idea-test-repo/](idea-test-repo/idea-test-repo.md) | ⏳ todo | medium | | Create a real GitHub repo (e.g. `rabb1tl0ka/repo-roadmap-test`) to run `install.sh` and `upgrade.sh` end-to-end so regressions like leftover files and double imports get caught before shipping. |
 | [challenge-upgrade-sh-e2e-test/](challenge-upgrade-sh-e2e-test/challenge-upgrade-sh-e2e-test.md) | 🔍 review | medium | | `upgrade.sh` shipped with a broken `gh` flag (`-C`) that wasn't caught because there's no end-to-end test covering the `--create-pr` path against a real git repo and `gh` CLI. |

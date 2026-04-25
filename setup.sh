@@ -187,6 +187,33 @@ else
   echo "✓  All config tags replaced."
 fi
 
+# ── Install Claude Skills ──────────────────────────────────────────────────────
+
+echo "Installing Claude Skills..."
+echo ""
+
+SKILLS_SRC="$SCRIPT_DIR/claude-skills"
+SKILLS_DEST="$HOME/.claude/skills"
+mkdir -p "$SKILLS_DEST"
+
+install_skill() {
+  local skill="$1"
+  local src="$SKILLS_SRC/$skill"
+  local dest="$SKILLS_DEST/$skill"
+
+  if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
+    echo "  ✓  /$skill already linked"
+  else
+    rm -rf "$dest"
+    ln -s "$src" "$dest"
+    echo "  ✓  /$skill → $src"
+  fi
+}
+
+install_skill recap
+
+echo ""
+
 # ── Next steps ─────────────────────────────────────────────────────────────────
 
 echo ""
