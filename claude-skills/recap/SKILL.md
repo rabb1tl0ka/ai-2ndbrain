@@ -1,7 +1,7 @@
 ---
 name: recap
 description: Extracts Claude Code sessions from the last 24h and writes a structured session log to $CLAUDE_SKILLS_VAULT/user/private/daily-claude-sessions/ (default: ~/2ndbrain). Can be run standalone or invoked by bye-recap() before vault backup and shutdown.
-argument-hint: (none)
+argument-hint: [--meetings]
 ---
 
 # /recap — Daily Session Summary
@@ -23,6 +23,14 @@ Call the output `VAULT_PATH`. Use this **exact resolved string** (e.g. `/home/al
 Then read the user profile at `<VAULT_PATH>/user/user.md`.
 
 Use the **Role**, **2026 Arc**, **Observation Lens**, and **Tone** sections from that file to inform the note — especially "Claude's Observations." If the file doesn't exist, proceed without it.
+
+---
+
+## Step 0.5: Parse --meetings flag
+
+Check the skill arguments. If `--meetings` was included in the invocation (e.g. `/recap --meetings`), set `WITH_MEETINGS=true`. Otherwise set `WITH_MEETINGS=false`.
+
+All Drive-related steps are skipped entirely when `WITH_MEETINGS=false`.
 
 ---
 
@@ -49,6 +57,47 @@ python3 ~/.claude/skills/recap/extract_sessions.py
 ```
 
 The extractor writes the cache automatically and prints the same JSON to stdout.
+
+---
+
+## Step 1b: Fetch meeting transcripts from Google Drive
+
+> **Skip this entire step if `WITH_MEETINGS=false`.**
+
+### Time window
+
+Read `last_meetings_covered_until` from `~/.claude/skills/recap/state.json`. If the field is absent, fall back to 24h ago.
+
+Then apply a hard cap: compute `now - 5 days` and use whichever is **more recent** between `last_meetings_covered_until` and the cap. This prevents a stale state from pulling in weeks of meetings at once.
+
+This window is independent of the Claude sessions window (`covered_from`) so meetings are never missed due to session timing.
+
+### Fetch docs
+
+Load `mcp__claude_ai_Google_Drive__search_files` via ToolSearch, then search:
+
+- Folder ID: `1hdV9eXl8t7JyIe78tR7i5wuA3Qlk7O1e`
+- File name contains: `Notes by Gemini`
+- Modified after: `covered_from`
+
+### Read and truncate each doc
+
+For each file returned:
+
+1. Call `mcp__claude_ai_Google_Drive__read_file_content` with the file ID
+2. Find the first occurrence of `# 📝 Transcript` or `# Transcript` in the content
+3. Discard that line and everything after it — only keep the notes section
+4. From the notes section, extract:
+   - **Meeting title and time** (from the doc title or top heading, format: `{title} - {date} - Notes by Gemini`)
+   - **Attendees** (from the Invited line)
+   - **Summary** (the Summary subsection)
+   - **Decisions** (the Decisions subsection)
+   - **My Next Steps** (items from Next Steps assigned to Bruno Coelho only)
+   - **My Contributions** (bullets from the Details subsection that explicitly attribute something to Bruno — what he raised, decided, emphasized, or requested)
+
+### If no files found
+
+Set `meetings = []` — the note will say "No meetings recorded in this period."
 
 ---
 
@@ -97,6 +146,16 @@ date: YYYY-MM-DD
 
 ## Open Threads
 <Things started but not clearly resolved — infer from prompts without obvious follow-through, files read but not modified, tasks that seemed mid-flight.>
+
+## Meetings
+<Include this section only if WITH_MEETINGS=true. For each meeting, use the block below. If meetings=[], write: "No meetings recorded in this period.">
+
+### <Meeting Title> — <HH:MM>
+**Attendees**: <comma-separated list>
+**Summary**: <1-2 sentences from the Gemini summary>
+**Decisions**: <bullet list from the Decisions section>
+**My Next Steps**: <action items from Next Steps assigned to Bruno only; omit if none>
+**My Contributions**: <what Bruno specifically raised, decided, emphasized, or requested — sourced from Details bullets that name him>
 ```
 
 ### If the file ALREADY EXISTS — append this block at the end:
@@ -122,6 +181,9 @@ date: YYYY-MM-DD
 
 ### Open Threads
 <...>
+
+### Meetings
+<Include this subsection only if WITH_MEETINGS=true. Same format as the full-note Meetings section above.>
 ```
 
 Use the current local time for `HH:MM`.
@@ -145,15 +207,37 @@ After successfully writing the note, save the high-water mark from the cache (so
 
 ```bash
 python3 -c "
-import json, sys
+import json
 from pathlib import Path
 cache = json.loads(Path('$HOME/.claude/skills/recap/cache/<work_day_date>.json').read_text())
 covered_until = cache.get('covered_until')
 if covered_until:
-    state = Path('$HOME/.claude/skills/recap/state.json')  # matches STATE_FILE in extractor
-    state.write_text(json.dumps({'last_covered_until': covered_until}))
+    state_path = Path('$HOME/.claude/skills/recap/state.json')
+    try:
+        state = json.loads(state_path.read_text())
+    except Exception:
+        state = {}
+    state['last_covered_until'] = covered_until
+    state_path.write_text(json.dumps(state))
 "
 rm -f ~/.claude/skills/recap/cache/<work_day_date>.json
+```
+
+If `WITH_MEETINGS=true`, also update `last_meetings_covered_until` to the current UTC timestamp:
+
+```bash
+python3 -c "
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+state_path = Path('$HOME/.claude/skills/recap/state.json')
+try:
+    state = json.loads(state_path.read_text())
+except Exception:
+    state = {}
+state['last_meetings_covered_until'] = datetime.now(timezone.utc).isoformat()
+state_path.write_text(json.dumps(state))
+"
 ```
 
 ---
@@ -164,3 +248,7 @@ rm -f ~/.claude/skills/recap/cache/<work_day_date>.json
 - **Cache exists but is from a different work_day_date**: ignore it, run fresh extraction
 - **Extraction fails**: print the error and exit non-zero. The shell wrapper will warn the user and proceed to shutdown anyway. The cache (if written) will be reused next time.
 - **user.md missing**: proceed without user context — don't fail the skill
+- **--meetings: no Drive files found**: write `No meetings recorded in this period.` under `## Meetings` — never omit the section silently when `WITH_MEETINGS=true`
+- **--meetings: Drive search or read fails**: note the failure inline under `## Meetings` (e.g. `Could not fetch meetings: <error>`), do not abort the rest of the recap
+- **--meetings: a doc has no `# 📝 Transcript` marker**: read the full content as-is (it may be a shorter notes-only doc)
+- **--meetings: last run was more than 5 days ago**: silently cap the window to 5 days back — don't warn, don't explain, just cap it
