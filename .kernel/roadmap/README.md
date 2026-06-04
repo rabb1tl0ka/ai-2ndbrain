@@ -29,7 +29,7 @@ Items start as flat files and grow into workspace directories when they need sup
 
 | File                        | Status      | Priority | Owner | One-Line Overview |
 |-----------------------------|-------------|----------|-------|-------------------|
-| [idea-vault-skills-and-meeting-import/](idea-vault-skills-and-meeting-import/idea-vault-skills-and-meeting-import.md) | ⏳ todo | medium | | Consolidate vault-related Claude Skills into this repo and add a deterministic Python script that imports Google Meet transcripts from Drive into the vault. |
+| [idea-whisper-video-transcription/](idea-whisper-video-transcription/idea-whisper-video-transcription.md) | ⏳ todo | medium | | Ship OpenAI Whisper alongside /bootstrap so users can opt in to transcribing video files before summarizing them, instead of silently skipping them. |
 
 *(The table above is automatically maintained by Claude Code. Do not edit it manually.)*
 

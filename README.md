@@ -1,135 +1,65 @@
-# 2nd Brain
+# ai-2ndbrain
 
-A Claude-powered personal knowledge system. Clone it, configure it in 2 minutes, and have a working 2nd brain that Claude understands from day one.
+A personal knowledge vault powered by Claude Code. Clone it, run `/onboard`, and have a working 2nd brain from day one.
 
-## What's inside
+## What this is
 
-```
-2ndbrain-vault/        ← your knowledge vault (open this in Obsidian)
-  inbox/               ← everything lands here first
-  notes/               ← your thinking, evergreen
-  learning/            ← knowledge being built
-  sources/             ← external content (articles, references)
-  daily/               ← daily notes
-  archive/             ← processed inbox items worth keeping
-  projects/            ← one folder per active project
-  user/                ← who you are: goals, challenges, development, relationships
-  templates/           ← note templates
-brain.config.example.yaml  ← config template (copy → brain.config.yaml, then fill in)
-brain.config.yaml          ← your personal config, gitignored — never committed
-setup.sh                   ← applies your config to the vault
-```
+A ready-to-use knowledge system — structured around how personal knowledge actually flows: inbox for captures, notes for thinking, projects for active work, learning for skills you're building, and a user directory for goals, relationships, and development.
+
+Claude understands the vault structure from day one and helps you manage it.
 
 ## Setup
 
-**1. Clone**
+**1. Use this as a GitHub Template (or clone it)**
+
+Click "Use this template" on GitHub, or:
+
 ```bash
-git clone https://github.com/rabb1tl0ka/ai-2ndbrain
-cd ai-2ndbrain
-```
-
-**2. Fill in your config**
-
-Run setup once to generate your personal config file:
-```bash
-./setup.sh
-```
-
-On first run, the script creates `brain.config.yaml` from the example template and exits. Fill in your details — 7 fields, takes 2 minutes:
-
-```yaml
-USER_NAME: "Your Name"
-USER_HANDLE: "@yourhandle"
-USER_ROLE: "Your Role"
-USER_COMPANY: "Your Company"
-USER_CONTEXT: "Describe your work context in 1-2 sentences."
-VAULT_FOCUS: "work at Your Company"
-VAULT_PATH: "~/2ndbrain"   # where to install your vault
-```
-
-`brain.config.yaml` is gitignored — your personal values are never committed.
-
-**3. Run setup again**
-```bash
-./setup.sh
-```
-
-Copies the vault to `VAULT_PATH` and replaces all `{{placeholders}}` with your values. Your vault lives outside this repo — your personal knowledge stays yours.
-
-**4. Open the vault and spawn Claude Code**
-
-Open your vault folder in Obsidian (or any markdown editor).
-
-Then start a Claude Code session inside it:
-```bash
-cd ~/2ndbrain
+git clone https://github.com/your-username/ai-2ndbrain ~/my-2ndbrain
+cd ~/my-2ndbrain
 claude
 ```
 
-Claude reads `CLAUDE.md` automatically and knows how your vault works.
+**2. Run `/onboard`**
 
-## How to use it
+Opens a guided setup that collects your name, role, and vault focus, replaces placeholders across the vault, and optionally connects Google Drive and Slack.
 
-**Capture anything** → drop it in `inbox/` using `templates/inbox.md`
+**3. Run `/bootstrap` (optional)**
 
-**Process inbox** → ask Claude: *"process my inbox"* — it reads each item and routes it to the right place
+If you connected Drive or Slack during onboarding, bootstrap pulls data from those sources into your inbox so Claude has real context from the start.
 
-**Daily notes** → ask Claude: *"start today's note"* — creates `daily/YYYY-MM-DD.md`
+**4. Start**
 
-**Track a relationship** → copy `_example-person/`, fill in `profile.md`, log interactions in `log.md`
+The vault is ready. Open it in Obsidian (or any markdown editor) and use Claude Code from the repo root.
 
-**Develop yourself** → fill in `user/development/plan.md`, then ask Claude to process 1:1 notes or interactions against your plan
+## Vault structure
 
-**Session reports** → ask Claude: *"report today"* — generates a summary from your session logs
+```
+inbox/          ← everything lands here first
+notes/          ← your thinking and knowledge
+learning/       ← skills and topics you're building
+projects/       ← active project knowledge
+sources/        ← external content (articles, references)
+archive/        ← processed inbox items worth keeping
+daily/          ← daily notes
+user/           ← goals, challenges, relationships, development
+templates/      ← note templates
+```
 
-## Vault structure in depth
+## Commands
 
-| Directory | Purpose | Lifecycle |
-|-----------|---------|-----------|
-| `inbox/` | Raw captures — ideas, meeting notes, voice transcripts | Processed and moved out |
-| `notes/` | Your thinking, written to last | Evergreen |
-| `learning/` | Skills and knowledge being built | Grows over time |
-| `sources/` | External content with attribution | Stays as-is |
-| `daily/` | Daily notes and work logs | Chronological |
-| `archive/` | Processed inbox items worth keeping | Done |
-| `projects/` | Active project knowledge | Per-project lifecycle |
-| `user/` | You: goals, challenges, development, relationships | Reference |
+| Command | What it does |
+|---------|-------------|
+| `/onboard` | Initial setup — run once after cloning |
+| `/bootstrap` | Pull Drive + Slack into inbox |
+| `/2ndbrain` | Current status and what to do next |
+| `/recap` | Summarize today's Claude Code sessions |
+| `/growth-check` | Progress check against your growth plan |
 
-## Relationship tracking
+## Configuration
 
-Each person in `user/relationships/` gets 4 files:
+`/onboard` creates `config.yaml` (gitignored) from `config.example.yaml`. Edit it directly to update values or add integrations later.
 
-| File | What goes here |
-|------|---------------|
-| `profile.md` | Who they are, what drives them, how to work with them |
-| `meetings.md` | Formal 1:1s — key takeaways and action items |
-| `log.md` | Observations from any interaction (Slack, email, hallway) |
-| `tasks.md` | Actions you're taking for or because of them |
+## What's in `.kernel/`
 
-## Development plan
-
-`user/development/` tracks your growth as a professional. Fill in `plan.md` with the behaviors you're building, then ask Claude to process interactions against it. The protocol in `user/development/CLAUDE.md` tells Claude how to extract evidence and write honest log entries.
-
-## Power features: connecting external tools
-
-The vault alone is useful. Connected to your external tools, it's a different level.
-
-Claude can read from and act on Notion, Slack, Gmail, and Google Calendar directly inside your vault sessions — no copy-pasting, no context switching.
-
-**What this unlocks:**
-- *"Save this Slack thread to my inbox"* → Claude fetches it and saves it with attribution
-- *"Update the Notion page with my meeting notes"* → Claude pushes changes directly
-- *"Set up today's daily note"* → Claude pulls your calendar events and pre-populates the file
-- *"Draft and send a message to [person]"* → Claude writes it from vault context and sends it
-
-**How to set it up:**
-
-Go to **[claude.ai → Settings → Integrations](https://claude.ai/settings/integrations)** and connect the tools you use. Once connected, they're available in every Claude Code session automatically.
-
-If Claude doesn't see your integrations in a vault session, it will tell you and point you here.
-
-## Requirements
-
-- [Claude Code](https://claude.ai/code) — for AI-assisted knowledge work
-- A markdown editor — [Obsidian](https://obsidian.md) recommended (any editor works)
-- `bash` + `sed` — for `setup.sh` (standard on macOS and Linux)
+Internal tooling for the template maintainer — roadmap, supporting scripts for commands. Not relevant to vault users.
