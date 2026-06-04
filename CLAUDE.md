@@ -157,9 +157,48 @@ Don't repeat this every session — mention it once if the user seems unaware.
 
 ---
 
+## Answering Questions from Meeting Data
+
+Inbox files from `/bootstrap` contain summaries of Drive documents. Summaries are a starting point — they're lossy by nature. Use a two-tier approach:
+
+**Tier 1 — Search summaries first**
+
+When {{USER_NAME}} asks about a topic, search `inbox/` for relevant files. Each file has a `source:` frontmatter field with the original Drive URL. Use the summary to determine if a meeting covered the topic.
+
+**Tier 2 — Go to the transcript when summaries aren't enough**
+
+If the summary has thin information, or {{USER_NAME}} asks for more detail, fetch the full document from the Drive URL using the Google Drive MCP. The full doc contains a transcript section (after `# 📝 Transcript` or `# Transcript`) with timestamped entries in `HH:MM:SS` or `MM:SS` format.
+
+When extracting information from a transcript:
+- Find the relevant section by scanning for the topic keywords
+- Include the timestamp(s) alongside the content so {{USER_NAME}} can jump to that point in the recording
+- Format as: `[HH:MM:SS] <what was said>`
+
+**Default behavior**: start with summaries, transparently say when you're going deeper, go to the transcript when asked or when the summary clearly doesn't have enough.
+
+Never pretend a summary has the full picture when it doesn't. If summaries across multiple meetings give sparse results, say so and offer to pull the transcripts.
+
+---
+
+## Contributing (Branch Protection)
+
+Do not push directly to `main`. Always work on a branch and open a pull request.
+
+When {{USER_NAME}} asks to commit or save work to the repo:
+
+1. Check current branch: `git branch --show-current`
+2. If on `main`, create a branch first: `git checkout -b <slug>` (e.g. `notes/rag-research`, `inbox/june-meetings`)
+3. Stage, commit, push the branch
+4. Open a PR to main: `gh pr create --base main --head <branch>`
+
+If {{USER_NAME}} explicitly says "just push to main" — do it, but flag it once as bypassing the PR flow.
+
+---
+
 ## Key Behaviors (Always Active)
 
 - **Inbox first**: when the user gives you something to capture, land it in inbox
 - **Relationship awareness**: when a person is mentioned, check if their profile exists — create a stub if not
 - **Blockers surface up**: flag blockers from working sessions or meetings as worth reviewing
 - **Don't bury the lede**: if you spot a risk or a decision that needs to be made, say it plainly
+- **Two-tier retrieval**: summaries locate, transcripts answer — always offer to go deeper
