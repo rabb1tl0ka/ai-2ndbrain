@@ -25,7 +25,6 @@ Read `user/user.md` for context about {{USER_NAME}}: role, goals, work style, an
 | `sources/` | External content (articles, references, research) | Stays as-is |
 | `notes/` | {{USER_NAME}}'s thinking and knowledge | Evergreen |
 | `learning/` | Knowledge being built (skills, topics, craft) | Grows over time |
-| `projects/` | Project-level knowledge for active work | Active work |
 | `user/` | {{USER_NAME}}: goals, challenges, development, relationships | Reference |
 | `daily/` | Daily notes | Chronological |
 
@@ -43,7 +42,7 @@ Add your most important reference documents here after setup. Examples:
 
 ## Quick Reference
 
-- **Inbox processing**: Read inbox items, route to `archive/`, `sources/`, `projects/`, `learning/`, or `notes/`
+- **Inbox processing**: Read inbox items, route to `archive/`, `sources/`, `learning/`, or `notes/`
 - **No magic routing**: Everything lands in inbox first. {{USER_NAME}} decides where it goes.
 - **Sources**: External content uses `by:`, `source:`, `date:` frontmatter
 - **{{USER_NAME}}'s words**: No `by:` field needed
@@ -119,7 +118,6 @@ Two-tier system:
 | System | Location | Who it covers |
 |--------|----------|---------------|
 | Internal relationships | `user/relationships/{firstname-lastname}/` | Colleagues, peers, managers |
-| Project stakeholders | `projects/{project}/stakeholders/{firstname-lastname}/` | Clients, external partners |
 
 **Per person:**
 

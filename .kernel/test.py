@@ -71,7 +71,7 @@ def test_repo_structure():
 
     dirs = [
         "inbox", "archive", "daily", "learning", "notes",
-        "projects", "sources", "templates", "user",
+        "sources", "templates", "user",
         ".claude/commands", ".kernel",
     ]
     for d in dirs:

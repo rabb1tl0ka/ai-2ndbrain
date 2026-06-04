@@ -4,7 +4,7 @@ A personal knowledge vault powered by Claude Code. Clone it, run `/onboard`, and
 
 ## What this is
 
-A ready-to-use knowledge system — structured around how personal knowledge actually flows: inbox for captures, notes for thinking, projects for active work, learning for skills you're building, and a user directory for goals, relationships, and development.
+A ready-to-use knowledge system — structured around how personal knowledge actually flows: inbox for captures, notes for thinking, learning for skills you're building, and a user directory for goals, relationships, and development.
 
 Claude understands the vault structure from day one and helps you manage it.
 
@@ -38,7 +38,6 @@ The vault is ready. Open it in Obsidian (or any markdown editor) and use Claude 
 inbox/          ← everything lands here first
 notes/          ← your thinking and knowledge
 learning/       ← skills and topics you're building
-projects/       ← active project knowledge
 sources/        ← external content (articles, references)
 archive/        ← processed inbox items worth keeping
 daily/          ← daily notes
