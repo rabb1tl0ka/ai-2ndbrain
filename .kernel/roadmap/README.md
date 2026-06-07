@@ -29,6 +29,7 @@ Items start as flat files and grow into workspace directories when they need sup
 
 | File                        | Status      | Priority | Owner | One-Line Overview |
 |-----------------------------|-------------|----------|-------|-------------------|
+| [idea-automated-idea-to-execution-pipeline/](idea-automated-idea-to-execution-pipeline/idea-automated-idea-to-execution-pipeline.md) | ⏳ todo | medium | | Wire the 2nd brain inbox into a classify → plan → approve pipeline so a raw idea can become a scoped project plan with only ~2 minutes of human involvement. |
 | [idea-whisper-video-transcription/](idea-whisper-video-transcription/idea-whisper-video-transcription.md) | ⏳ todo | medium | | Ship OpenAI Whisper alongside /bootstrap so users can opt in to transcribing video files before summarizing them, instead of silently skipping them. |
 
 *(The table above is automatically maintained by Claude Code. Do not edit it manually.)*
